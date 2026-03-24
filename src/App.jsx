@@ -1,19 +1,42 @@
 import { useState } from 'react'
+import 'aframe'
 
+function ARScene() {
+  return (
+    <a-scene
+      xr-mode="ar"
+      renderer="colorManagement: true"
+      embedded
+      style={{ width: '100%', height: '80vh' }}
+    >
+      <a-box
+        id="box"
+        position="0 0 -0.8"
+        color="#4CC3D9"
+        scale="0.3 0.3 0.3"
+      ></a-box>
+
+      <a-entity camera look-controls></a-entity>
+    </a-scene>
+  )
+}
 export default function App() {
-  const [activity, setActivity] = useState('')
+  const [clr, setClr] = useState('#4CC3D9')
 
-  const fetchActivity = async () => {
-    const res = await fetch('https://www.boredapi.com/api/activity')
-    const data = await res.json()
-    setActivity(data.activity)
+  const toggle = () => {
+    setClr(c => (c === '#4CC3D9' ? '#EF2D5E' : '#4CC3D9'))
   }
 
+  // Update A-Frame element
+  setTimeout(() => {
+    const box = document.querySelector('#box')
+    if (box) box.setAttribute('color', clr)
+  }, 100)
+
   return (
-    <div>
-      <h1>Activity App</h1>
-      <button onClick={fetchActivity}>Get Activity</button>
-      <p>{activity}</p>
-    </div>
+    <>
+      <button onClick={toggle}>Toggle color</button>
+      <ARScene />
+    </>
   )
 }
